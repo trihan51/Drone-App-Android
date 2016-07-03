@@ -11,7 +11,27 @@
     tools:context="com.example.trihan.drone_app_android.MainActivity">
 
     <TextView
-        android:text="Hello World!"
+        android:text="Sparrow"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="58dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/button_login"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Signup"
+        android:id="@+id/button_signup"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/button_login"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

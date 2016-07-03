@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "258159200707",
+    "firebase_url": "https://project-1014930948340040493.firebaseio.com",
+    "project_id": "project-1014930948340040493",
+    "storage_bucket": "project-1014930948340040493.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258159200707:android:872ce89caa422f42",
+        "android_client_info": {
+          "package_name": "com.example.trihan.drone_app_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258159200707-clgpsr9jd1lt3tl8gulk1g8fj1mfgok6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trihan.drone_app_android",
+            "certificate_hash": "775CAFC0CD678F78F047FB529DD3B520207D3DD6"
+          }
+        },
+        {
+          "client_id": "258159200707-j3gasq3jo7rlq2djnsisooc30eh6rdgf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw-2pH532itW6lIYzxJNROfyL0N7SUAiw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "258159200707-j3gasq3jo7rlq2djnsisooc30eh6rdgf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
