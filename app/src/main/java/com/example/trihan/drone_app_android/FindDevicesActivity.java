@@ -58,8 +58,11 @@ public class FindDevicesActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                Carrier c = new Carrier();
-                String response = c.sendMessage("Hi there, I am the user from the Android device.");
+                Carrier c = new Carrier("http://192.168.1.119:8080/connect");
+                Message m = new Message();
+                m.setCommand("do this, do that. muahahah");
+
+                String response = c.sendMessage(m);
                 System.out.println(response);
             } catch (IOException ioe) {
                 System.out.println(ioe);
