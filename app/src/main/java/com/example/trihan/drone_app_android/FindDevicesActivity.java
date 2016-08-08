@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 public class FindDevicesActivity extends AppCompatActivity {
 
@@ -52,6 +53,40 @@ public class FindDevicesActivity extends AppCompatActivity {
                 new CarrierConnectTask().execute();
             }
         });
+
+        AsyncTask<Void, Void, Void> task = new FindDevicesOnNetwork();
+        task.execute();
+    }
+
+    private class FindDevicesOnNetwork extends AsyncTask<Void, Void, Void> {
+        private Exception exception;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            System.out.println("Finding Devices");
+
+            Runtime runtime = Runtime.getRuntime();
+
+            int timeout = 3000;
+            String subnet = "192.168.1";
+            for (int i = 1; i < 255; i++) {
+                String host = subnet + "." + i;
+                try {
+                    Process mIpAddrProcess = runtime.exec("/system/bin/ping -c " + host);
+                    int mExitValue = mIpAddrProcess.waitFor();
+                    System.out.println(" mExitValue " + mExitValue);
+
+                    if (mExitValue == 0) {
+                        System.out.println(host + " is reachable");
+                    }
+                } catch (java.lang.InterruptedException ie) {
+                    ie.printStackTrace();
+                } catch (java.io.IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 
     private class CarrierConnectTask extends AsyncTask<Void, Void, Void> {
@@ -60,12 +95,12 @@ public class FindDevicesActivity extends AppCompatActivity {
             try {
                 Carrier c = new Carrier("http://192.168.1.119:8080/connect");
                 Message m = new Message();
-                m.setCommand("do this, do that. muahahah");
+                m.write(Message.COMMAND, "do this, do that. muahahah");
 
-                String response = c.sendMessage(m);
-                System.out.println(response);
+                Message responseMessage = c.sendMessage(m);
+                System.out.println(responseMessage.read(Message.RESPONSE));
             } catch (IOException ioe) {
-                System.out.println(ioe);
+                ioe.printStackTrace();
             }
             return null;
         }

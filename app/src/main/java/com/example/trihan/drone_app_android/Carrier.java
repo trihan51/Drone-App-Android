@@ -28,21 +28,23 @@ public class Carrier {
         gson = new Gson();
     }
 
-    public String sendMessage(Message message) throws IOException {
+    public Message sendMessage(Message message) throws IOException {
         URL url = new URL(mDestination);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        urlConnection.setDoOutput(true);
+        urlConnection.setChunkedStreamingMode(0);
+        urlConnection.connect();
 
         try {
-            System.out.println("about to write");
-
-            urlConnection.setDoOutput(true);
-            urlConnection.setChunkedStreamingMode(0);
-
             OutputStream output = new BufferedOutputStream(urlConnection.getOutputStream());
             writeStream(output, message);
+            output.close();
 
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            String response = readStream(in);
+            InputStream input = new BufferedInputStream(urlConnection.getInputStream());
+            Message response = readStream(input);
+            input.close();
+
             return response;
         } finally {
             urlConnection.disconnect();
@@ -53,12 +55,13 @@ public class Carrier {
         try {
             String jsonString = gson.toJson(message);
             output.write(jsonString.getBytes());
+            output.flush();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    private String readStream(InputStream input) {
+    private Message readStream(InputStream input) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             int bytesRead = 0;
@@ -69,6 +72,7 @@ public class Carrier {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return new String(out.toByteArray());
+        String jsonString = new String(out.toByteArray());
+        return gson.fromJson(jsonString, Message.class);
     }
 }
