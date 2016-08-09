@@ -17,7 +17,13 @@ public class ControlRoom extends AppCompatActivity {
     private String mDroneIPAddress;
 
     private Button mGoToDroneInfoButton;
-    private Button mTestConnect;
+
+    private Button mUpButton;
+    private Button mDownButton;
+    private Button mForwardButton;
+    private Button mBackwardButton;
+    private Button mRotateLeftButton;
+    private Button mRotateRightButton;
 
     public static Intent newIntent(Context packageContext, String ipAddress) {
         Intent intent = new Intent(packageContext, ControlRoom.class);
@@ -33,7 +39,12 @@ public class ControlRoom extends AppCompatActivity {
         mDroneIPAddress = this.getIntent().getStringExtra(IPADDRESS);
 
         mGoToDroneInfoButton = (Button) findViewById(R.id.button_go_to_drone_info);
-        mTestConnect = (Button) findViewById(R.id.button_test_connect);
+        mUpButton = (Button) findViewById(R.id.button_up);
+        mDownButton = (Button) findViewById(R.id.button_down);
+        mForwardButton = (Button) findViewById(R.id.button_forward);
+        mBackwardButton = (Button) findViewById(R.id.button_backward);
+        mRotateLeftButton = (Button) findViewById(R.id.button_rotate_left);
+        mRotateRightButton = (Button) findViewById(R.id.button_rotate_right);
 
         mGoToDroneInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,28 +54,71 @@ public class ControlRoom extends AppCompatActivity {
             }
         });
 
-        mTestConnect.setOnClickListener(new View.OnClickListener() {
+        mUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new CarrierConnectTask().execute();
+                new CarrierCommandTask().execute(mDroneIPAddress, Commands.MOVE_UP);
+            }
+        });
+
+        mDownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CarrierCommandTask().execute(mDroneIPAddress, Commands.MOVE_DOWN);
+            }
+        });
+
+        mForwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CarrierCommandTask().execute(mDroneIPAddress, Commands.MOVE_FORWARD);
+            }
+        });
+
+        mBackwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CarrierCommandTask().execute(mDroneIPAddress, Commands.MOVE_BACKWARD);
+            }
+        });
+
+        mRotateLeftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CarrierCommandTask().execute(mDroneIPAddress, Commands.ROTATE_LEFT);
+            }
+        });
+
+        mRotateRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CarrierCommandTask().execute(mDroneIPAddress, Commands.ROTATE_RIGHT);
             }
         });
     }
 
-    private class CarrierConnectTask extends AsyncTask<Void, Void, Void> {
+    private class CarrierCommandTask extends AsyncTask<String, Void, Message> {
         @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Carrier c = new Carrier("http://" + mDroneIPAddress + ":8080/commands");
-                Message m = new Message();
-                m.write(Message.COMMAND, "do this, do that. muahahah");
+        protected Message doInBackground(String... params) {
+            String DroneIpAddress = params[0];
+            String command = params[1];
 
-                Message responseMessage = c.sendMessage(m);
-                System.out.println(responseMessage.read(Message.RESPONSE));
+            Message response;
+            try{
+                Carrier c = new Carrier("http://" + DroneIpAddress + ":8080/commands");
+                Message m = new Message();
+                m.write(Message.COMMAND, command);
+                response = c.sendMessage(m);
             } catch (IOException ioe) {
+                response = new Message();
+                response.write(Message.RESPONSE, "IOException Error");
                 ioe.printStackTrace();
             }
-            return null;
+            return response;
+        }
+
+        protected void onPostExecute(Message m) {
+            System.out.println("Response: " + m.read(Message.RESPONSE));
         }
     }
 }
